@@ -1,0 +1,28 @@
+{
+  "id": "users",
+  "name": "Users",
+  "version": "0.1.0",
+  "description": "提供用户资料、用户组、权限分配与封禁管理能力。",
+  "icon": "fas fa-users",
+  "category": "feature",
+  "authors": ["Bias"],
+  "dependencies": ["core"],
+  "provides": ["profiles", "groups", "suspension"],
+  "django": {
+    "app_config": "bias_ext_users.backend.apps.UsersExtensionConfig",
+    "app_label": "users",
+    "migration_module": "bias_ext_users.backend.django_migrations"
+  },
+  "backend": {
+    "entry": "bias_ext_users.backend.ext"
+  },
+  "frontend": {
+    "admin_entry": "frontend/dist/admin/index.js",
+    "forum_entry": "frontend/dist/forum/index.js"
+  },
+  "extra": {
+    "auto_install": true,
+    "auto_enable": true,
+    "protected": true
+  }
+}

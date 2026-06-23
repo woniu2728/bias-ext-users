@@ -1,0 +1,21 @@
+[project]
+name = "bias-ext-users"
+version = "0.1.0"
+description = "Bias Users Extension — user profiles, groups, permissions, and authentication"
+requires-python = ">=3.11"
+dependencies = [
+  "bias-core>=0.1,<0.2"
+]
+
+[project.entry-points."bias.extensions"]
+users = "bias_ext_users.backend.ext:extend"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["bias_ext_users*"]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.1",
+  "pytest-django>=4.8",
+]
