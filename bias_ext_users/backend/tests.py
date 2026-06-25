@@ -22,11 +22,11 @@ from bias_core.forum_registry import get_forum_registry
 from bias_core.models import AuditLog, Setting
 from bias_core.jwt_auth import ACCESS_TOKEN_COOKIE_NAME
 from bias_core.extensions import ResourceEndpointDefinition
-from extensions.testing import ResourceRegistry
-from extensions.testing import bootstrap_enabled_extension_application
+from bias_core.tests.testing import ResourceRegistry
+from bias_core.tests.testing import bootstrap_enabled_extension_application
 from bias_core.settings_service import clear_runtime_setting_caches
 from bias_core.extensions.runtime import get_runtime_notification_model
-from extensions.testing import ExtensionRuntimeTestMixin
+from bias_core.tests.testing import ExtensionRuntimeTestMixin
 from bias_ext_users.backend.handlers import user_resource_endpoints
 from bias_ext_users.backend.avatar_upload import UserAvatarUploadService
 from bias_ext_users.backend.models import Group
@@ -1157,7 +1157,7 @@ class SecurityHeadersTests(TestCase):
 
 class HumanVerificationAuthTests(TestCase):
     def setUp(self):
-        from extensions.testing import bootstrap_enabled_extension_application
+        from bias_core.tests.testing import bootstrap_enabled_extension_application
 
         bootstrap_enabled_extension_application("security")
         self.user = User.objects.create_user(
@@ -1699,4 +1699,5 @@ class AdminGroupManagementApiTests(TestCase):
         self.assertEqual(response.status_code, 400, response.content)
         self.assertEqual(response.json()["error"], "系统默认用户组不允许删除")
         self.assertTrue(Group.objects.filter(id=1, name="Admin").exists())
+
 
