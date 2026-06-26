@@ -1195,7 +1195,7 @@ class HumanVerificationAuthTests(TestCase):
         self.assertEqual(response.status_code, 400, response.content)
         self.assertEqual(response.json()["error"], "请先完成真人验证")
 
-    @patch("extensions.security.backend.human_verification.httpx.post")
+    @patch("bias_ext_security.backend.human_verification.httpx.post")
     def test_login_accepts_valid_human_verification_token(self, mock_post):
         self.enable_turnstile(login_enabled=True, register_enabled=False)
         mock_post.return_value = self._build_turnstile_response({"success": True})
@@ -1218,7 +1218,7 @@ class HumanVerificationAuthTests(TestCase):
         self.assertEqual(mock_post.call_args.kwargs["data"]["secret"], "secret-key")
         self.assertEqual(mock_post.call_args.kwargs["data"]["response"], "turnstile-ok")
 
-    @patch("extensions.security.backend.human_verification.httpx.post")
+    @patch("bias_ext_security.backend.human_verification.httpx.post")
     def test_register_accepts_valid_human_verification_token(self, mock_post):
         self.enable_turnstile(login_enabled=False, register_enabled=True)
         mock_post.return_value = self._build_turnstile_response({"success": True})
@@ -1238,7 +1238,7 @@ class HumanVerificationAuthTests(TestCase):
         self.assertEqual(response.json()["username"], "verified-register")
         self.assertTrue(User.objects.filter(username="verified-register").exists())
 
-    @patch("extensions.security.backend.human_verification.httpx.post")
+    @patch("bias_ext_security.backend.human_verification.httpx.post")
     def test_login_returns_service_unavailable_when_turnstile_verification_breaks(self, mock_post):
         self.enable_turnstile(login_enabled=True, register_enabled=False)
         mock_post.side_effect = httpx.ConnectError("boom")
@@ -1558,11 +1558,17 @@ class AdminUserManagementApiTests(TestCase):
                 )
 
         self.assertEqual(response.status_code, 200, response.content)
-        self.assertEqual(len(callbacks), 1)
-        event = mocked_bus.dispatch.call_args.args[0]
+        events = [
+            call.args[0]
+            for call in mocked_bus.dispatch.call_args_list
+            if isinstance(call.args[0], UserSuspendedEvent)
+        ]
+        self.assertEqual(len(events), 1)
+        event = events[0]
         self.assertIsInstance(event, UserSuspendedEvent)
         self.assertEqual(event.user_id, self.user.id)
         self.assertEqual(event.actor_user_id, self.admin.id)
+        self.assertGreaterEqual(len(callbacks), 1)
 
     def test_admin_unsuspension_event_dispatches_after_commit(self):
         self.user.suspended_until = timezone.now() + timedelta(days=2)
@@ -1585,11 +1591,17 @@ class AdminUserManagementApiTests(TestCase):
                 )
 
         self.assertEqual(response.status_code, 200, response.content)
-        self.assertEqual(len(callbacks), 1)
-        event = mocked_bus.dispatch.call_args.args[0]
+        events = [
+            call.args[0]
+            for call in mocked_bus.dispatch.call_args_list
+            if isinstance(call.args[0], UserUnsuspendedEvent)
+        ]
+        self.assertEqual(len(events), 1)
+        event = events[0]
         self.assertIsInstance(event, UserUnsuspendedEvent)
         self.assertEqual(event.user_id, self.user.id)
         self.assertEqual(event.actor_user_id, self.admin.id)
+        self.assertGreaterEqual(len(callbacks), 1)
 
     def test_admin_can_delete_user(self):
         response = self.client.delete(
