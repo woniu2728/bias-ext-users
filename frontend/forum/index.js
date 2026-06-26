@@ -4,7 +4,7 @@ import {
 } from '@bias/core'
 import { extendForum,
   getUiCopy
-} from '@bias/forum'
+} from '@bias/core/forum'
 import { buildUserPath, normalizeUser, registerAuthModalProvider } from '@bias/users'
 import AuthSessionModal from './AuthSessionModal.vue'
 import HeaderUserMenu from './HeaderUserMenu.vue'

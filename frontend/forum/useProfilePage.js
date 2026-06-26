@@ -5,7 +5,7 @@ import {
 import {
   getUiCopy,
   useForumUiStore
-} from '@bias/forum'
+} from '@bias/core/forum'
 import { useForumRealtimeStore } from '@bias/realtime'
 import { normalizeUser } from '@bias/users'
 import { useProfileAccountActions } from './useProfileAccountActions'

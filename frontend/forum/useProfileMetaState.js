@@ -2,7 +2,7 @@ import {
   watch,
   computed } from '@bias/core'
 import { getPageState
-} from '@bias/forum'
+} from '@bias/core/forum'
 import { getUserBadges, resolveProfileMetaPayload } from '@bias/users'
 
 export function createProfileMetaState({

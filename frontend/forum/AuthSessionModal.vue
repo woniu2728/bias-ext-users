@@ -274,7 +274,7 @@ import {
 import {
   getUiCopy,
   useForumStore
-} from '@bias/forum'
+} from '@bias/core/forum'
 
 const props = defineProps({
   showing: {

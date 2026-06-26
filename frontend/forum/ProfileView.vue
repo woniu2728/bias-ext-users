@@ -42,7 +42,7 @@ import { useRouter,
 } from '@bias/core'
 import { ForumStateBlock,
   useForumStore
-} from '@bias/forum'
+} from '@bias/core/forum'
 import ProfileHero from './ProfileHero.vue'
 import ProfileSidebar from './ProfileSidebar.vue'
 import { useProfileViewModel } from './useProfileViewModel'

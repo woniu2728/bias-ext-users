@@ -41,7 +41,7 @@ import {
   toRef } from '@bias/core'
 import { ForumStateBadge,
   ForumStateBlock
-} from '@bias/forum'
+} from '@bias/core/forum'
 import { useProfileContentSectionState } from './useProfileContentSectionState'
 
 const props = defineProps({

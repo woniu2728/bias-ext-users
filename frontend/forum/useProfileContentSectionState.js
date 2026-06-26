@@ -6,7 +6,7 @@ import {
   getEmptyState,
   getFeedbackNote,
   getStateBlock
-} from '@bias/forum'
+} from '@bias/core/forum'
 
 export function createProfileContentSectionState({
   getFeedback = getFeedbackNote,

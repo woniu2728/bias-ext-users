@@ -1,5 +1,5 @@
 import { computed } from '@bias/core'
-import { getUiCopy } from '@bias/forum'
+import { getUiCopy } from '@bias/core/forum'
 import { useVerifyEmailPage } from './useVerifyEmailPage'
 import { useVerifyEmailViewBindings } from './useVerifyEmailViewBindings'
 

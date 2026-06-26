@@ -2,7 +2,7 @@ import {
   computed } from '@bias/core'
 import { getStateBlock,
   getUiCopy
-} from '@bias/forum'
+} from '@bias/core/forum'
 
 function getPreferenceGroupFallback(category) {
   return category === 'behavior'

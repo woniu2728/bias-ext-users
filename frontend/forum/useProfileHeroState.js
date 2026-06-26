@@ -2,7 +2,7 @@ import {
   computed } from '@bias/core'
 import { getHeroMetaItems,
   getUiCopy
-} from '@bias/forum'
+} from '@bias/core/forum'
 
 export function createProfileHeroState({
   avatarUploading,

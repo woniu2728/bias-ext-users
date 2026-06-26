@@ -122,7 +122,7 @@ import {
   toRef } from '@bias/core'
 import { ForumInlineMessage,
   ForumStateBlock
-} from '@bias/forum'
+} from '@bias/core/forum'
 import { useProfileSettingsSectionState } from './useProfileSettingsSectionState'
 
 const props = defineProps({

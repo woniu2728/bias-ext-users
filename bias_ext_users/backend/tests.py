@@ -22,11 +22,11 @@ from bias_core.forum_registry import get_forum_registry
 from bias_core.models import AuditLog, Setting
 from bias_core.jwt_auth import ACCESS_TOKEN_COOKIE_NAME
 from bias_core.extensions import ResourceEndpointDefinition
-from bias_core.tests.testing import ResourceRegistry
-from bias_core.tests.testing import bootstrap_enabled_extension_application
+from bias_core.testing import ResourceRegistry
+from bias_core.testing import bootstrap_enabled_extension_application
 from bias_core.settings_service import clear_runtime_setting_caches
 from bias_core.extensions.runtime import get_runtime_notification_model
-from bias_core.tests.testing import ExtensionRuntimeTestMixin
+from bias_core.testing import ExtensionRuntimeTestMixin
 from bias_ext_users.backend.handlers import user_resource_endpoints
 from bias_ext_users.backend.avatar_upload import UserAvatarUploadService
 from bias_ext_users.backend.models import Group
@@ -582,7 +582,7 @@ class UserProfileApiTests(TestCase):
         )
 
         with patch("bias_ext_users.backend.handlers.get_runtime_resource_registry", return_value=registry):
-            with patch("apps.core.resource_dispatcher.get_runtime_resource_registry", return_value=registry):
+            with patch("bias_core.resource_dispatcher.get_runtime_resource_registry", return_value=registry):
                 response = self.client.get(f"/api/users/{user.id}")
 
         self.assertEqual(response.status_code, 200, response.content)
@@ -622,7 +622,7 @@ class UserProfileApiTests(TestCase):
         group = Group.objects.create(name="RuntimeGroup", color="#27ae60", icon="fas fa-key")
         Permission.objects.create(group=group, permission="runtime.group.permission")
 
-        with patch("apps.core.extensions.system_runtime.apply_runtime_user_group_processors", return_value=[group.id]):
+        with patch("bias_core.extensions.system_runtime.apply_runtime_user_group_processors", return_value=[group.id]):
             self.assertEqual(
                 UserService.get_forum_permission_set(user),
                 {"runtime.group.permission"},
@@ -1157,7 +1157,7 @@ class SecurityHeadersTests(TestCase):
 
 class HumanVerificationAuthTests(TestCase):
     def setUp(self):
-        from bias_core.tests.testing import bootstrap_enabled_extension_application
+        from bias_core.testing import bootstrap_enabled_extension_application
 
         bootstrap_enabled_extension_application("security")
         self.user = User.objects.create_user(
@@ -1544,7 +1544,7 @@ class AdminUserManagementApiTests(TestCase):
 
     def test_admin_suspension_event_dispatches_after_commit(self):
         mocked_bus = Mock()
-        with patch("apps.core.domain_events.get_forum_event_bus", return_value=mocked_bus):
+        with patch("bias_core.domain_events.get_forum_event_bus", return_value=mocked_bus):
             with self.captureOnCommitCallbacks(execute=True) as callbacks:
                 response = self.client.put(
                     f"/api/admin/users/{self.user.id}",
@@ -1571,7 +1571,7 @@ class AdminUserManagementApiTests(TestCase):
         self.user.save(update_fields=["suspended_until", "suspend_reason", "suspend_message"])
 
         mocked_bus = Mock()
-        with patch("apps.core.domain_events.get_forum_event_bus", return_value=mocked_bus):
+        with patch("bias_core.domain_events.get_forum_event_bus", return_value=mocked_bus):
             with self.captureOnCommitCallbacks(execute=True) as callbacks:
                 response = self.client.put(
                     f"/api/admin/users/{self.user.id}",
@@ -1699,5 +1699,7 @@ class AdminGroupManagementApiTests(TestCase):
         self.assertEqual(response.status_code, 400, response.content)
         self.assertEqual(response.json()["error"], "系统默认用户组不允许删除")
         self.assertTrue(Group.objects.filter(id=1, name="Admin").exists())
+
+
 
 

@@ -103,7 +103,7 @@
 
 <script setup>
 import { toRef } from '@bias/core'
-import { ForumInlineMessage } from '@bias/forum'
+import { ForumInlineMessage } from '@bias/core/forum'
 import { useProfileSecuritySectionState } from './useProfileSecuritySectionState'
 
 const props = defineProps({
