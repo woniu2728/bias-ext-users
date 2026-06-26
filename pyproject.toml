@@ -10,6 +10,9 @@ dependencies = [
 [project.entry-points."bias.extensions"]
 users = "bias_ext_users.backend.ext:extend"
 
+[tool.setuptools]
+include-package-data = true
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["bias_ext_users*"]
@@ -19,3 +22,10 @@ dev = [
   "pytest>=8.1",
   "pytest-django>=4.8",
 ]
+
+[tool.setuptools.data-files]
+"bias_extensions/users" = ["extension.json"]
+"bias_extensions/users/frontend" = ["frontend/index.js", "frontend/UsersPage.vue", "frontend/usersPageBootstrap.js"]
+"bias_extensions/users/frontend/admin" = ["frontend/admin/index.js", "frontend/admin/UsersPage.vue", "frontend/admin/usersPageBootstrap.js"]
+"bias_extensions/users/frontend/forum" = ["frontend/forum/authModal.js", "frontend/forum/AuthRouteView.vue", "frontend/forum/AuthSessionModal.vue", "frontend/forum/authStore.js", "frontend/forum/HeaderUserMenu.vue", "frontend/forum/index.js", "frontend/forum/MobileDrawerUserCard.vue", "frontend/forum/onlineUsersStore.js", "frontend/forum/ProfileDiscussionSection.vue", "frontend/forum/ProfileHero.vue", "frontend/forum/profileMeta.js", "frontend/forum/profileMeta.test.js", "frontend/forum/profileOnlineState.js", "frontend/forum/profileOnlineState.test.js", "frontend/forum/ProfilePostSection.vue", "frontend/forum/ProfileSecuritySection.vue", "frontend/forum/ProfileSettingsSection.vue", "frontend/forum/ProfileSidebar.vue", "frontend/forum/ProfileView.vue", "frontend/forum/ResetPasswordView.vue", "frontend/forum/sdk.d.ts", "frontend/forum/sdk.js", "frontend/forum/useAuthRoutePage.js", "frontend/forum/useAuthRoutePage.test.js", "frontend/forum/useProfileAccountActions.js", "frontend/forum/useProfileAccountActions.test.js", "frontend/forum/useProfileAccountState.js", "frontend/forum/useProfileAccountState.test.js", "frontend/forum/useProfileContentSectionState.js", "frontend/forum/useProfileContentSectionState.test.js", "frontend/forum/useProfileContentState.js", "frontend/forum/useProfileContentState.test.js", "frontend/forum/useProfileHeroState.js", "frontend/forum/useProfileHeroState.test.js", "frontend/forum/useProfileMetaState.js", "frontend/forum/useProfileMetaState.test.js", "frontend/forum/useProfilePage.js", "frontend/forum/useProfilePageActions.js", "frontend/forum/useProfilePageActions.test.js", "frontend/forum/useProfilePageLifecycle.js", "frontend/forum/useProfilePageLifecycle.test.js", "frontend/forum/useProfilePanelState.js", "frontend/forum/useProfilePanelState.test.js", "frontend/forum/useProfilePresentation.js", "frontend/forum/useProfileRealtimeState.js", "frontend/forum/useProfileRealtimeState.test.js", "frontend/forum/useProfileRouteState.js", "frontend/forum/useProfileRouteState.test.js", "frontend/forum/useProfileSecuritySectionState.js", "frontend/forum/useProfileSecuritySectionState.test.js", "frontend/forum/useProfileSettingsSectionState.js", "frontend/forum/useProfileSettingsSectionState.test.js", "frontend/forum/useProfileUserState.js", "frontend/forum/useProfileUserState.test.js", "frontend/forum/useProfileViewBindings.js", "frontend/forum/useProfileViewBindings.test.js", "frontend/forum/useProfileViewModel.js", "frontend/forum/useResetPasswordPage.js", "frontend/forum/useResetPasswordPage.test.js", "frontend/forum/useResetPasswordViewBindings.js", "frontend/forum/useResetPasswordViewModel.js", "frontend/forum/userFrontendRegistry.js", "frontend/forum/userPrimaryGroup.js", "frontend/forum/userPrimaryGroup.test.js", "frontend/forum/userRuntime.js", "frontend/forum/useVerifyEmailPage.js", "frontend/forum/useVerifyEmailPage.test.js", "frontend/forum/useVerifyEmailViewBindings.js", "frontend/forum/useVerifyEmailViewModel.js", "frontend/forum/VerifyEmailView.vue"]
+

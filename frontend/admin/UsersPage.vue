@@ -326,7 +326,7 @@ import {
   getAdminUsersPageConfig,
   getAdminUsersPageCopy,
   useModalStore,
-} from '@bias/admin/components'
+} from '@bias/core/components/admin'
 import { useAuthStore } from '@bias/users'
 
 const authStore = useAuthStore()

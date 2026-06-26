@@ -1,5 +1,5 @@
-import { extendAdmin } from '@bias/admin'
-import { ExtensionGeneratedPermissionsPage } from '@bias/admin/components'
+import { extendAdmin } from '@bias/core/admin'
+import { ExtensionGeneratedPermissionsPage } from '@bias/core/components/admin'
 import UsersPage from './UsersPage.vue'
 import { buildUsersPageExtender } from './usersPageBootstrap.js'
 
