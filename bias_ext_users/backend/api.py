@@ -17,12 +17,15 @@ from bias_core.extensions.platform import (
     set_access_token_cookie,
     set_refresh_token_cookie,
 )
+from bias_core.jwt_auth import resolve_authenticated_user
+from bias_core.websocket_auth import resolve_user_from_refresh_token
 from bias_core.extensions.runtime import RuntimeHumanVerificationError, verify_runtime_human_verification
 from bias_ext_users.backend.auth_rate_limit import (
     AuthRateLimitExceeded,
     check_auth_rate_limit,
     clear_auth_rate_limit,
 )
+from bias_ext_users.backend.handlers import dispatch_current_user
 from bias_ext_users.backend.preferences import normalize_user_preferences, normalize_user_ui_preferences, serialize_user_preferences
 from bias_ext_users.backend.schemas import (
     EmailVerifySchema,
@@ -97,6 +100,25 @@ def login(request, payload: UserLoginSchema):
         return api_error(message, status=401)
 
 
+@router.get("/session", tags=["Auth"])
+def session(request):
+    user = resolve_authenticated_user(request)
+    if not getattr(user, "is_authenticated", False):
+        refresh_token = request.COOKIES.get(REFRESH_TOKEN_COOKIE_NAME)
+        user = resolve_user_from_refresh_token(refresh_token or "")
+
+    if not getattr(user, "is_authenticated", False):
+        return {"authenticated": False, "user": None}
+
+    return {
+        "authenticated": True,
+        "user": dispatch_current_user({
+            "request": request,
+            "user": user,
+        }),
+    }
+
+
 @router.post("/token/refresh", response=TokenSchema, tags=["Auth"])
 def refresh_access_token(request):
     refresh_token = request.COOKIES.get(REFRESH_TOKEN_COOKIE_NAME)
@@ -134,6 +156,7 @@ def logout(request):
 
     response = JsonResponse({"message": "登出成功"})
     response = clear_access_token_cookie(response)
+    response = clear_session_hint_cookie(response)
     return clear_refresh_token_cookie(response)
 
 

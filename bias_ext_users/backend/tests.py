@@ -1047,6 +1047,30 @@ class TokenCookieAuthTests(TestCase):
         self.assertEqual(response.status_code, 200, response.content)
         self.assertEqual(response.json()["username"], "token-cookie-user")
 
+    def test_session_probe_returns_unauthenticated_without_cookies(self):
+        response = self.client.get("/api/users/session", secure=True)
+
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(response.json(), {"authenticated": False, "user": None})
+
+    def test_session_probe_returns_user_for_logged_in_user(self):
+        login_response = self.client.post(
+            "/api/users/login",
+            data=json.dumps({
+                "identification": "token-cookie-user",
+                "password": "password123",
+            }),
+            content_type="application/json",
+            secure=True,
+        )
+        self.assertEqual(login_response.status_code, 200, login_response.content)
+
+        response = self.client.get("/api/users/session", secure=True)
+
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertTrue(response.json()["authenticated"])
+        self.assertEqual(response.json()["user"]["username"], "token-cookie-user")
+
     def test_csrf_bootstrap_sets_secure_cookie(self):
         csrf_client = Client(enforce_csrf_checks=True)
 
