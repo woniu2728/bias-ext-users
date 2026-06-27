@@ -5,9 +5,17 @@
   "description": "提供用户资料、用户组、权限分配与封禁管理能力。",
   "icon": "fas fa-users",
   "category": "feature",
-  "authors": ["Bias"],
-  "dependencies": ["core"],
-  "provides": ["profiles", "groups", "suspension"],
+  "authors": [
+    "Bias"
+  ],
+  "dependencies": [
+    "core"
+  ],
+  "provides": [
+    "profiles",
+    "groups",
+    "suspension"
+  ],
   "django": {
     "app_config": "bias_ext_users.backend.apps.UsersExtensionConfig",
     "app_label": "users",
@@ -24,5 +32,8 @@
     "auto_install": true,
     "auto_enable": true,
     "protected": true
+  },
+  "security": {
+    "capabilities_notice": "User domain extension; owns authentication, profile, group, permission, and account security surfaces."
   }
 }
