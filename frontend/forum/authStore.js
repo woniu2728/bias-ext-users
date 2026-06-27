@@ -71,22 +71,29 @@ export const useAuthStore = defineStore('auth', () => {
     isRestoringSession.value = false
   }
 
-  async function fetchUser() {
+  async function fetchUser(options = {}) {
+    const probe = Boolean(options.probe)
+
     try {
-      const data = await api.get('/users/me')
+      const data = await api.get('/users/me', probe ? {
+        skipAuthRefresh: true,
+        skipAuthInvalidation: true,
+      } : undefined)
       user.value = data
       isRestoringSession.value = false
       return data
     } catch (error) {
       if (error.response?.status === 401) {
-        logout()
+        if (!probe) {
+          logout()
+        }
       } else {
-        user.value = null
-        isRestoringSession.value = false
+        if (error.response?.status !== 503) {
+          console.error('获取用户信息失败:', error)
+        }
       }
-      if (error.response?.status !== 503) {
-        console.error('获取用户信息失败:', error)
-      }
+      user.value = null
+      isRestoringSession.value = false
       return null
     }
   }
@@ -94,17 +101,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function checkAuth() {
     isRestoringSession.value = true
 
-    try {
-      await api.post('/users/token/refresh', null, {
-        skipAuthRefresh: true,
-        skipAuthInvalidation: true,
-      })
-      return await fetchUser()
-    } catch (_error) {
-      user.value = null
-      isRestoringSession.value = false
-      return null
-    }
+    return fetchUser({ probe: true })
   }
 
   function hasPermission(permission) {
