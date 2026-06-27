@@ -200,11 +200,12 @@ def serialize_user_payload(user, resource: str = "user_detail") -> dict | None:
 
 
 def _serialize_user_summary_base(user, context: dict) -> dict:
+    display_name = getattr(user, "display_name", "") or getattr(user, "username", "")
     return {
         "id": user.id,
         "username": user.username,
-        "display_name": user.display_name,
-        "avatar_url": user.avatar_url,
+        "display_name": display_name,
+        "avatar_url": getattr(user, "avatar_url", ""),
     }
 
 

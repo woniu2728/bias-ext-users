@@ -56,26 +56,26 @@ def serialize_admin_user(user: User, include_details: bool = False) -> Dict[str,
     payload = {
         "id": user.id,
         "username": user.username,
-        "email": user.email,
-        "display_name": user.display_name,
-        "avatar_url": user.avatar_url,
-        "is_email_confirmed": user.is_email_confirmed,
-        "is_staff": user.is_staff,
-        "is_suspended": user.is_suspended,
-        "joined_at": user.joined_at,
-        "last_seen_at": user.last_seen_at,
-        "discussion_count": user.discussion_count,
-        "comment_count": user.comment_count,
-        "groups": [serialize_group(group) for group in user.user_groups.all().order_by("name")],
+        "email": getattr(user, "email", ""),
+        "display_name": getattr(user, "display_name", "") or getattr(user, "username", ""),
+        "avatar_url": getattr(user, "avatar_url", ""),
+        "is_email_confirmed": bool(getattr(user, "is_email_confirmed", False)),
+        "is_staff": bool(getattr(user, "is_staff", False)),
+        "is_suspended": bool(getattr(user, "is_suspended", False)),
+        "joined_at": getattr(user, "joined_at", None),
+        "last_seen_at": getattr(user, "last_seen_at", None),
+        "discussion_count": getattr(user, "discussion_count", 0),
+        "comment_count": getattr(user, "comment_count", 0),
+        "groups": [serialize_group(group) for group in user.user_groups.all().order_by("name")] if hasattr(user, "user_groups") else [],
         "primary_group": serialize_group(primary_group) if primary_group else None,
     }
 
     if include_details:
         payload.update({
-            "bio": user.bio,
-            "suspended_until": user.suspended_until,
-            "suspend_reason": user.suspend_reason,
-            "suspend_message": user.suspend_message,
+            "bio": getattr(user, "bio", ""),
+            "suspended_until": getattr(user, "suspended_until", None),
+            "suspend_reason": getattr(user, "suspend_reason", ""),
+            "suspend_message": getattr(user, "suspend_message", ""),
         })
 
     return payload

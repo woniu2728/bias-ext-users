@@ -73,6 +73,8 @@ def _group_priority(group: Group) -> int:
 def get_primary_group(user: Optional[User]) -> Optional[Group]:
     if not user:
         return None
+    if not hasattr(user, "user_groups"):
+        return None
 
     groups = list(user.user_groups.all())
     has_admin_group = any(

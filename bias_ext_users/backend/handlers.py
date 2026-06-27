@@ -34,10 +34,10 @@ def serialize_user_detail_payload(user, include_forum_permissions: bool = False,
     ) or {}
     payload.update(
         {
-            "email": user.email,
-            "is_email_confirmed": user.is_email_confirmed,
-            "is_suspended": user.is_suspended,
-            "is_staff": user.is_staff,
+            "email": getattr(user, "email", ""),
+            "is_email_confirmed": bool(getattr(user, "is_email_confirmed", False)),
+            "is_suspended": bool(getattr(user, "is_suspended", False)),
+            "is_staff": bool(getattr(user, "is_staff", False)),
         }
     )
     if "groups" not in payload and hasattr(user, "user_groups"):
@@ -55,9 +55,9 @@ def serialize_user_detail_payload(user, include_forum_permissions: bool = False,
         payload["preferences"] = user.preferences or {}
     if include_forum_permissions:
         payload["forum_permissions"] = getattr(user, "forum_permissions", [])
-        payload["suspended_until"] = user.suspended_until
-        payload["suspend_reason"] = user.suspend_reason
-        payload["suspend_message"] = user.suspend_message
+        payload["suspended_until"] = getattr(user, "suspended_until", None)
+        payload["suspend_reason"] = getattr(user, "suspend_reason", "")
+        payload["suspend_message"] = getattr(user, "suspend_message", "")
     return payload
 
 
