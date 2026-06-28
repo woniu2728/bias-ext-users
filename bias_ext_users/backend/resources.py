@@ -83,6 +83,16 @@ def user_resource_relationship_definitions():
             prefetch_related=("edited_user__user_groups",),
         ),
         ResourceRelationshipDefinition(
+            resource="post",
+            relationship="hidden_user",
+            module_id="users",
+            resolver=_resolve_post_hidden_user,
+            description="帖子隐藏操作者摘要。",
+            resource_type="post_user",
+            select_related=("hidden_user",),
+            prefetch_related=("hidden_user__user_groups",),
+        ),
+        ResourceRelationshipDefinition(
             resource="search_discussion",
             relationship="user",
             module_id="users",
@@ -248,6 +258,10 @@ def _resolve_post_user(post, context: dict) -> dict | None:
 
 def _resolve_post_edited_user(post, context: dict) -> dict | None:
     return serialize_user_payload(getattr(post, "edited_user", None), resource="post_user")
+
+
+def _resolve_post_hidden_user(post, context: dict) -> dict | None:
+    return serialize_user_payload(getattr(post, "hidden_user", None), resource="post_user")
 
 
 def _resolve_user_primary_group(user, context: dict) -> dict | None:
