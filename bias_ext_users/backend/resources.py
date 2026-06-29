@@ -147,6 +147,7 @@ def user_resource_field_definitions():
             module_id="users",
             resolver=_resolve_user_primary_group,
             description="用户摘要中的主用户组徽章。",
+            prefetch_related=("user_groups",),
         ),
         ResourceFieldDefinition(
             resource="user_detail",
@@ -154,6 +155,7 @@ def user_resource_field_definitions():
             module_id="users",
             resolver=_resolve_user_primary_group,
             description="用户详情中的主用户组徽章。",
+            prefetch_related=("user_groups",),
         ),
         ResourceFieldDefinition(
             resource="search_user",
@@ -161,6 +163,7 @@ def user_resource_field_definitions():
             module_id="users",
             resolver=_resolve_user_primary_group,
             description="搜索用户结果中的主用户组徽章。",
+            prefetch_related=("user_groups",),
         ),
         ResourceFieldDefinition(
             resource="discussion_user",
@@ -168,6 +171,7 @@ def user_resource_field_definitions():
             module_id="users",
             resolver=_resolve_user_primary_group,
             description="讨论作者摘要中的主用户组徽章。",
+            prefetch_related=("user_groups",),
         ),
         ResourceFieldDefinition(
             resource="post_user",
@@ -175,6 +179,7 @@ def user_resource_field_definitions():
             module_id="users",
             resolver=_resolve_user_primary_group,
             description="帖子作者摘要中的主用户组徽章。",
+            prefetch_related=("user_groups",),
         ),
     )
 
