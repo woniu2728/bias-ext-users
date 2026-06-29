@@ -1,4 +1,4 @@
-from bias_core.testing import build_extension_test_urlpatterns
+from bias_core.extensions.testing import build_extension_test_urlpatterns
 
 
 urlpatterns = build_extension_test_urlpatterns(

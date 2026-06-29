@@ -13,9 +13,9 @@ from datetime import timedelta, datetime
 import secrets
 
 from bias_ext_users.backend.models import User, Group, Permission, EmailToken, PasswordToken
-from bias_core.extensions.forum import AuditLog
+from bias_core.extensions.platform import AuditLog
 from bias_core.extensions.platform import evaluate_extension_policy
-from bias_core.extensions.forum import get_registry_staff_managed_admin_permission_codes
+from bias_core.extensions.platform import get_registry_staff_managed_admin_permission_codes
 from bias_core.extensions.runtime import apply_runtime_user_group_processors
 from bias_core.extensions.runtime import verify_runtime_user_password
 from bias_ext_users.backend.mail import queue_password_reset_email, queue_verification_email
@@ -166,6 +166,8 @@ class UserService:
     def has_forum_permission(user: User, permission_names) -> bool:
         if not user or not user.is_authenticated:
             return False
+        if user.is_superuser:
+            return True
 
         if isinstance(permission_names, str):
             permission_names = [permission_names]

@@ -15,7 +15,7 @@ from bias_core.extensions.platform import get_mail_settings_defaults, get_settin
 from bias_core.extensions.platform import log_admin_action
 from bias_core.extensions.platform import require_staff
 from bias_ext_users.backend.events import UserSuspendedEvent, UserUnsuspendedEvent
-from bias_core.extensions.forum import get_forum_registry
+from bias_core.extensions.platform import get_forum_registry
 from bias_ext_users.backend.admin_user_helpers import (
     is_builtin_group,
     normalize_permission_code,

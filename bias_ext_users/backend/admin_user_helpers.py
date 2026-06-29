@@ -3,7 +3,7 @@ from typing import Any, Dict
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 
-from bias_core.extensions.forum import get_forum_registry
+from bias_core.extensions.platform import get_forum_registry
 from bias_ext_users.backend.group_utils import get_primary_group, serialize_group_badge
 from bias_ext_users.backend.models import Group, User
 

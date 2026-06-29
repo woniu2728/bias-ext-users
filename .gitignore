@@ -10,3 +10,4 @@ node_modules/
 frontend/dist/
 *.sqlite3
 test_*.sqlite3
+instance/

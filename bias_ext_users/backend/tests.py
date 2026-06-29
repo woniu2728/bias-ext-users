@@ -17,16 +17,20 @@ from PIL import Image
 from ninja_jwt.tokens import RefreshToken
 
 from bias_ext_users.backend.events import UserSuspendedEvent, UserUnsuspendedEvent
-from bias_core.extension_settings_service import save_extension_settings
-from bias_core.forum_registry import get_forum_registry
-from bias_core.models import AuditLog, Setting
-from bias_core.jwt_auth import ACCESS_TOKEN_COOKIE_NAME
+from bias_core.extensions.platform import ACCESS_TOKEN_COOKIE_NAME
 from bias_core.extensions import ResourceEndpointDefinition
-from bias_core.testing import ResourceRegistry
-from bias_core.testing import bootstrap_enabled_extension_application
-from bias_core.settings_service import clear_runtime_setting_caches
 from bias_core.extensions.runtime import get_runtime_notification_model
-from bias_core.testing import ExtensionRuntimeTestMixin
+from bias_core.extensions.testing import (
+    AuditLog,
+    ExtensionRuntimeTestMixin,
+    ResourceRegistry,
+    Setting,
+    bootstrap_enabled_extension_application,
+    capture_runtime_events,
+    clear_runtime_setting_caches,
+    get_forum_registry,
+    save_extension_settings,
+)
 from bias_ext_users.backend.handlers import user_resource_endpoints
 from bias_ext_users.backend.avatar_upload import UserAvatarUploadService
 from bias_ext_users.backend.models import Group
@@ -191,9 +195,7 @@ class UsersExtensionDiagnosticsTests(ExtensionRuntimeTestMixin, TestCase):
             and item["target_app_label_source"] == "manifest"
             for item in audit["items"]
         ))
-        self.assertTrue(
-            any(str(name).startswith("0001_") for name in extension["migration_plan"]["pending_files"])
-        )
+        self.assertEqual(extension["migration_plan"]["pending_files"], [])
 
 
 @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
@@ -1181,7 +1183,7 @@ class SecurityHeadersTests(TestCase):
 
 class HumanVerificationAuthTests(TestCase):
     def setUp(self):
-        from bias_core.testing import bootstrap_enabled_extension_application
+        from bias_core.extensions.testing import bootstrap_enabled_extension_application
 
         bootstrap_enabled_extension_application("security")
         self.user = User.objects.create_user(
@@ -1567,8 +1569,8 @@ class AdminUserManagementApiTests(TestCase):
         self.assertEqual(unsuspended_notification.from_user_id, self.admin.id)
 
     def test_admin_suspension_event_dispatches_after_commit(self):
-        mocked_bus = Mock()
-        with patch("bias_core.domain_events.get_forum_event_bus", return_value=mocked_bus):
+        events, dispatch_patch = capture_runtime_events()
+        with dispatch_patch:
             with self.captureOnCommitCallbacks(execute=True) as callbacks:
                 response = self.client.put(
                     f"/api/admin/users/{self.user.id}",
@@ -1582,13 +1584,9 @@ class AdminUserManagementApiTests(TestCase):
                 )
 
         self.assertEqual(response.status_code, 200, response.content)
-        events = [
-            call.args[0]
-            for call in mocked_bus.dispatch.call_args_list
-            if isinstance(call.args[0], UserSuspendedEvent)
-        ]
-        self.assertEqual(len(events), 1)
-        event = events[0]
+        matching_events = [event for event in events if isinstance(event, UserSuspendedEvent)]
+        self.assertEqual(len(matching_events), 1)
+        event = matching_events[0]
         self.assertIsInstance(event, UserSuspendedEvent)
         self.assertEqual(event.user_id, self.user.id)
         self.assertEqual(event.actor_user_id, self.admin.id)
@@ -1600,8 +1598,8 @@ class AdminUserManagementApiTests(TestCase):
         self.user.suspend_message = "请等待处理"
         self.user.save(update_fields=["suspended_until", "suspend_reason", "suspend_message"])
 
-        mocked_bus = Mock()
-        with patch("bias_core.domain_events.get_forum_event_bus", return_value=mocked_bus):
+        events, dispatch_patch = capture_runtime_events()
+        with dispatch_patch:
             with self.captureOnCommitCallbacks(execute=True) as callbacks:
                 response = self.client.put(
                     f"/api/admin/users/{self.user.id}",
@@ -1615,13 +1613,9 @@ class AdminUserManagementApiTests(TestCase):
                 )
 
         self.assertEqual(response.status_code, 200, response.content)
-        events = [
-            call.args[0]
-            for call in mocked_bus.dispatch.call_args_list
-            if isinstance(call.args[0], UserUnsuspendedEvent)
-        ]
-        self.assertEqual(len(events), 1)
-        event = events[0]
+        matching_events = [event for event in events if isinstance(event, UserUnsuspendedEvent)]
+        self.assertEqual(len(matching_events), 1)
+        event = matching_events[0]
         self.assertIsInstance(event, UserUnsuspendedEvent)
         self.assertEqual(event.user_id, self.user.id)
         self.assertEqual(event.actor_user_id, self.admin.id)

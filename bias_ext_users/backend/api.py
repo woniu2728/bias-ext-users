@@ -14,11 +14,11 @@ from bias_core.extensions.platform import (
     get_frontend_url,
     is_debug_mode,
     is_jwt_blacklisted,
+    resolve_authenticated_user,
+    resolve_user_from_refresh_token,
     set_access_token_cookie,
     set_refresh_token_cookie,
 )
-from bias_core.jwt_auth import resolve_authenticated_user
-from bias_core.websocket_auth import resolve_user_from_refresh_token
 from bias_core.extensions.runtime import RuntimeHumanVerificationError, verify_runtime_human_verification
 from bias_ext_users.backend.auth_rate_limit import (
     AuthRateLimitExceeded,
@@ -156,7 +156,6 @@ def logout(request):
 
     response = JsonResponse({"message": "登出成功"})
     response = clear_access_token_cookie(response)
-    response = clear_session_hint_cookie(response)
     return clear_refresh_token_cookie(response)
 
 

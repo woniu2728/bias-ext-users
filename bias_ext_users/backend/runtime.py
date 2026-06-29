@@ -35,13 +35,27 @@ def user_service_provider() -> dict:
         "ensure_email_confirmed": UserService.ensure_email_confirmed,
         "ensure_forum_permission": UserService.ensure_forum_permission,
         "has_forum_permission": UserService.has_forum_permission,
+        "get_forum_permissions": UserService.get_forum_permission_set,
         "requires_content_approval": UserService.requires_content_approval,
         "build_suspension_notice": UserService.build_suspension_notice,
         "get_preference": get_user_preference_value,
         "increment_discussion_count": increment_discussion_count,
         "increment_comment_count": increment_comment_count,
         "apply_comment_count_deltas": apply_comment_count_deltas,
+        "event_types": user_event_type_aliases(),
     }
+
+
+def user_event_type_aliases() -> dict[str, type]:
+    from bias_ext_users.backend.events import UserSuspendedEvent, UserUnsuspendedEvent
+
+    return {
+        "users.user.suspended": UserSuspendedEvent,
+        "users.user.unsuspended": UserUnsuspendedEvent,
+    }
+
+
+user_service_provider.event_types = user_event_type_aliases
 
 
 def get_user_by_id(user_id):

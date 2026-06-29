@@ -102,3 +102,7 @@ export const extend = [
 export function resolvePermissionsPage() {
   return ExtensionGeneratedPermissionsPage
 }
+
+export function resolveDetailPage() {
+  return null
+}

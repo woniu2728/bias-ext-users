@@ -3,7 +3,7 @@ from __future__ import annotations
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 
-from bias_core.extensions.platform import can_mail_driver_send, send_with_extension_mail_driver
+from bias_core.extensions.platform import can_mail_driver_send, get_frontend_url, send_with_extension_mail_driver
 
 from bias_core.extensions.platform import EmailService
 from bias_core.extensions.platform import QueueService
@@ -18,7 +18,7 @@ from bias_ext_users.backend.mail_templates import (
 
 
 def send_verification_email(user_email: str, username: str, token: str) -> bool:
-    verification_url = f"{settings.FRONTEND_URL}/verify-email?token={token}"
+    verification_url = f"{get_frontend_url()}/verify-email?token={token}"
     mail_settings = EmailService.get_runtime_mail_settings()
     context = EmailService.build_mail_context(
         username=username,
@@ -61,7 +61,7 @@ def queue_verification_email(user_email: str, username: str, token: str):
 
 
 def send_password_reset_email(user_email: str, username: str, token: str) -> bool:
-    reset_url = f"{settings.FRONTEND_URL}/reset-password?token={token}"
+    reset_url = f"{get_frontend_url()}/reset-password?token={token}"
     mail_settings = EmailService.get_runtime_mail_settings()
     context = EmailService.build_mail_context(
         username=username,

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from bias_core.extensions.runtime import get_runtime_user_preference_transformers
-from bias_core.extensions.forum import get_forum_registry
+from bias_core.extensions.platform import get_forum_registry
 
 
 def get_user_preference_definitions(category: str | None = None):
