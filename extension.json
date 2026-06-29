@@ -31,7 +31,10 @@
   "extra": {
     "auto_install": true,
     "auto_enable": true,
-    "protected": true
+    "protected": true,
+    "frontend_boot": {
+      "admin": true
+    }
   },
   "security": {
     "capabilities_notice": "User domain extension; owns authentication, profile, group, permission, and account security surfaces."
