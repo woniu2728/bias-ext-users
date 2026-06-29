@@ -740,6 +740,40 @@ class UserProfileApiTests(TestCase):
         ]
         self.assertLessEqual(len(select_group_queries), 2)
 
+    def test_list_users_default_page_has_bounded_queries(self):
+        viewer = User.objects.create_user(
+            username="user-list-budget-viewer",
+            email="user-list-budget-viewer@example.com",
+            password="password123",
+            is_email_confirmed=True,
+        )
+        viewer_group = Group.objects.create(name="BudgetViewers", color="#2ecc71")
+        Permission.objects.create(group=viewer_group, permission="viewUserList")
+        viewer.user_groups.add(viewer_group)
+
+        for index in range(8):
+            listed_user = User.objects.create_user(
+                username=f"listed-user-budget-{index}",
+                email=f"listed-user-budget-{index}@example.com",
+                password="password123",
+                is_email_confirmed=True,
+            )
+            support_group = Group.objects.create(name=f"BudgetSupport{index}", color="#3498db")
+            listed_user.user_groups.add(support_group)
+
+        token = str(RefreshToken.for_user(viewer).access_token)
+        with CaptureQueriesContext(connection) as context:
+            response = self.client.get(
+                "/api/users",
+                {"limit": 8},
+                HTTP_AUTHORIZATION=f"Bearer {token}",
+            )
+
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(len(response.json()), 8)
+        query_summary = "\n".join(query["sql"] for query in context.captured_queries)
+        self.assertLessEqual(len(context.captured_queries), 12, query_summary)
+
     def test_search_users_exposes_primary_group(self):
         viewer = User.objects.create_user(
             username="user-search-viewer",
@@ -1729,7 +1763,6 @@ class AdminGroupManagementApiTests(TestCase):
         self.assertEqual(response.status_code, 400, response.content)
         self.assertEqual(response.json()["error"], "系统默认用户组不允许删除")
         self.assertTrue(Group.objects.filter(id=1, name="Admin").exists())
-
 
 
 
