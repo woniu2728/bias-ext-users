@@ -1,11 +1,16 @@
 import { extendAdmin } from '@bias/core/admin'
 import { ExtensionGeneratedPermissionsPage } from '@bias/core/components/admin'
+import { useAuthStore } from '@bias/users'
 import UsersPage from './UsersPage.vue'
 import { buildUsersPageExtender } from './usersPageBootstrap.js'
 
 const MAIL_PAGE_KEY = 'core.mail'
 
 export const extend = [
+  extendAdmin(admin => admin.service('users.auth', {
+    store: useAuthStore,
+  })),
+
   extendAdmin(admin => admin.route({
     path: '/admin/users',
     name: 'admin-users',
