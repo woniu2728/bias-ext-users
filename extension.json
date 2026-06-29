@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "提供用户资料、用户组、权限分配与封禁管理能力。",
   "icon": "fas fa-users",
-  "category": "feature",
+  "category": "foundation",
   "authors": [
     "Bias"
   ],
@@ -12,6 +12,7 @@
     "core"
   ],
   "provides": [
+    "users",
     "profiles",
     "groups",
     "suspension"
@@ -32,6 +33,7 @@
     "auto_install": true,
     "auto_enable": true,
     "protected": true,
+    "protected_reason": "用户、用户组、权限与账号安全是系统基础域，不能作为普通功能扩展停用或卸载。",
     "frontend_boot": {
       "admin": true
     }
