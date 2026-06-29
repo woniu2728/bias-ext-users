@@ -5,7 +5,16 @@ import {
 import { extendForum,
   getUiCopy
 } from '@bias/core/forum'
-import { buildUserPath, normalizeUser, registerAuthModalProvider } from '@bias/users'
+import {
+  buildUserPath,
+  normalizeUser,
+  openForgotPasswordModal,
+  openLoginModal,
+  openRegisterModal,
+  registerAuthModalProvider,
+  useAuthStore,
+  useOnlineUsersStore,
+} from '@bias/users'
 import AuthSessionModal from './AuthSessionModal.vue'
 import HeaderUserMenu from './HeaderUserMenu.vue'
 import MobileDrawerUserCard from './MobileDrawerUserCard.vue'
@@ -22,6 +31,7 @@ export const extend = [
 ]
 
 function registerUsersForum(forum) {
+  registerUsersServices(forum)
   registerUsersAuthModal(forum)
   registerUsersNavigation(forum)
   registerUsersPresentation(forum)
@@ -30,6 +40,19 @@ function registerUsersForum(forum) {
   registerUsersUiCopy(forum)
   registerProfilePanels(forum)
   return forum
+}
+
+function registerUsersServices(app) {
+  app
+    .service('users.auth', {
+      store: useAuthStore,
+      openLogin: openLoginModal,
+      openRegister: openRegisterModal,
+      openForgotPassword: openForgotPasswordModal,
+    })
+    .service('users.online', {
+      store: useOnlineUsersStore,
+    })
 }
 
 function registerUsersAuthModal() {
