@@ -3,7 +3,7 @@ Pydantic schemas for User API
 """
 from ninja import Schema
 from datetime import datetime
-from pydantic import Field
+from pydantic import ConfigDict, Field
 from typing import Any, Optional, List, Dict
 
 
@@ -53,8 +53,7 @@ class UserOutSchema(Schema):
     is_staff: bool = False
     primary_group: Optional[GroupBadgeSchema] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserUpdateSchema(Schema):
@@ -96,8 +95,7 @@ class GroupOutSchema(Schema):
     icon: str
     is_hidden: bool
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserDetailSchema(UserOutSchema):
